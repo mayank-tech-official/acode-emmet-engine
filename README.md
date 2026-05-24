@@ -59,20 +59,6 @@ Output:
 <div></div>
 ```
 
-INSTALLATION
-------------
-
-Option 1 (GitHub):
-1. Open Acode
-2. Go to Plugins
-3. Install from GitHub
-4. Paste repository URL
-
-Option 2 (Local):
-1. Download ZIP
-2. Extract it
-3. Select plugin.json in Acode local plugin option
-
 PROJECT STRUCTURE
 ------------------
 acode-emmet-engine/
