@@ -1,86 +1,107 @@
 "use strict";
 
 (() => {
-  const plugin = {
-    id: "acode.emmet.engine",
-    name: "Acode Emmet Engine"
-  };
 
-  class EmmetPlugin {
-    async init() {
-      this.editor = editorManager.editor;
+    const allowedTags = [
+        "html","head","body","title","meta","link","style","script",
+        "div","span","section","article","header","footer","nav","main","aside",
+        "h1","h2","h3","h4","h5","h6","p","br","hr",
+        "strong","b","em","i","small","mark",
+        "a","img","audio","video","source","iframe",
+        "ul","ol","li","dl","dt","dd",
+        "form","input","textarea","button","select","option","label","fieldset","legend",
+        "table","tr","td","th","thead","tbody","tfoot","caption",
+        "canvas","svg","template","noscript"
+    ];
 
-      editorManager.editor.commands.addCommand({
-        name: "emmetExpand",
-        bindKey: { win: "Enter", mac: "Enter" },
+    const indent = "    ";
 
-        exec: (ed) => {
-          const session = ed.session;
-          const pos = ed.getCursorPosition();
-          let line = session.getLine(pos.row).trim();
+    class EmmetPlugin {
+        async init() {
 
-          if (!line || line.startsWith("<")) {
-            session.insert(pos, "\n");
-            return;
-          }
+            editorManager.editor.commands.addCommand({
+                name: "emmetExpand",
+                bindKey: { win: "Tab", mac: "Tab" },
 
-          const html = this.expand(line);
+                exec: (ed) => {
 
-          session.replace({
-            start: { row: pos.row, column: 0 },
-            end: { row: pos.row, column: session.getLine(pos.row).length }
-          }, html);
+                    const session = ed.session;
+                    const pos = ed.getCursorPosition();
+                    const line = session.getLine(pos.row);
 
-          ed.moveCursorToPosition({
-            row: pos.row + 1,
-            column: 1
-          });
+                    const trimmed = line.trim();
+
+                    if (!trimmed || trimmed.startsWith("<")) return;
+
+                    const html = this.expand(trimmed);
+
+                    session.replace({
+                        start: { row: pos.row, column: 0 },
+                        end: { row: pos.row, column: line.length }
+                    }, html);
+
+                    // FIX: proper cursor position inside last tag
+                    const lines = html.split("\n");
+
+                    let cursorRow = 0;
+                    let cursorCol = 0;
+
+                    for (let i = 0; i < lines.length; i++) {
+                        const idx = lines[i].indexOf("|");
+                        if (idx !== -1) {
+                            cursorRow = pos.row + i;
+                            cursorCol = idx;
+                            break;
+                        }
+                    }
+
+                    ed.moveCursorToPosition({
+                        row: cursorRow,
+                        column: cursorCol
+                    });
+                }
+            });
         }
-      });
+
+        expand(input) {
+
+            const parts = input.split(">");
+            let result = "";
+
+            let stack = [];
+
+            for (let i = 0; i < parts.length; i++) {
+
+                let part = parts[i];
+
+                let tag = part.replace(/[#.].*/, "").trim();
+                if (!allowedTags.includes(tag)) tag = "div";
+
+                let cls = (part.match(/\.([\w-]+)/) || [])[1];
+                let id = (part.match(/#([\w-]+)/) || [])[1];
+
+                let attrs = "";
+                if (cls) attrs += ` class="${cls}"`;
+                if (id) attrs += ` id="${id}"`;
+
+                result += indent.repeat(i) + `<${tag}${attrs}>\n`;
+                stack.push(tag);
+            }
+
+            result += indent.repeat(parts.length) + "|\n";
+
+            for (let i = stack.length - 1; i >= 0; i--) {
+                result += indent.repeat(i) + `</${stack[i]}>\n`;
+            }
+
+            return result;
+        }
     }
 
-    expand(input) {
-      let parts = input.split(">");
-      let output = "";
-      let indent = 0;
-
-      for (let part of parts) {
-        let tag = part;
-        let cls = "";
-        let id = "";
-        let mult = 1;
-
-        let c = tag.match(/\.(\w+)/);
-        if (c) cls = c[1];
-
-        let i = tag.match(/#(\w+)/);
-        if (i) id = i[1];
-
-        let m = tag.match(/\*(\d+)/);
-        if (m) {
-          mult = Number(m[1]);
-          tag = tag.replace(/\*\d+/, "");
-        }
-
-        tag = tag.replace(/\.\w+/, "").replace(/#\w+/, "");
-
-        for (let j = 0; j < mult; j++) {
-          let attrs = "";
-          if (cls) attrs += ` class="${cls}"`;
-          if (id) attrs += ` id="${id}"`;
-
-          output += "  ".repeat(indent) + `<${tag || "div"}${attrs}></${tag || "div"}>\n`;
-          indent++;
-        }
-      }
-
-      return output;
+    if (window.acode) {
+        const plugin = new EmmetPlugin();
+        acode.setPluginInit("acode.emmet.engine", () => plugin.init());
+        acode.setPluginUnmount("acode.emmet.engine", () => {});
     }
-  }
 
-  if (window.acode) {
-    const plugin = new EmmetPlugin();
-    acode.setPluginInit("acode.emmet.engine", () => plugin.init());
-    acode.setPluginUnmount("acode.emmet.engine", () => {});
-  }
 })();
