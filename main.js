@@ -3,15 +3,15 @@
 (() => {
 
     const allowedTags = [
-        "html","head","body","title","meta","link","style","script",
-        "div","span","section","article","header","footer","nav","main","aside",
-        "h1","h2","h3","h4","h5","h6","p","br","hr",
-        "strong","b","em","i","small","mark",
-        "a","img","audio","video","source","iframe",
-        "ul","ol","li","dl","dt","dd",
-        "form","input","textarea","button","select","option","label","fieldset","legend",
-        "table","tr","td","th","thead","tbody","tfoot","caption",
-        "canvas","svg","template","noscript"
+        "html", "head", "body", "title", "meta", "link", "style", "script",
+        "div", "span", "section", "article", "header", "footer", "nav", "main", "aside",
+        "h1", "h2", "h3", "h4", "h5", "h6", "p", "br", "hr",
+        "strong", "b", "em", "i", "small", "mark",
+        "a", "img", "audio", "video", "source", "iframe",
+        "ul", "ol", "li", "dl", "dt", "dd",
+        "form", "input", "textarea", "button", "select", "option", "label", "fieldset", "legend",
+        "table", "tr", "td", "th", "thead", "tbody", "tfoot", "caption",
+        "canvas", "svg", "template", "noscript"
     ];
 
     const indent = "    ";
@@ -21,7 +21,9 @@
 
             editorManager.editor.commands.addCommand({
                 name: "emmetExpand",
-                bindKey: { win: "Tab", mac: "Tab" },
+                bindKey: {
+                    win: "Tab", mac: "Tab"
+                },
 
                 exec: (ed) => {
 
@@ -30,14 +32,18 @@
                     const line = session.getLine(pos.row);
 
                     const trimmed = line.trim();
-
-                    if (!trimmed || trimmed.startsWith("<")) return;
+                    const firstTag = trimmed.split(">")[0].split(".")[0].split("#")[0];
+                    if (!allowedTags.includes(firstTag)) return;
 
                     const html = this.expand(trimmed);
 
                     session.replace({
-                        start: { row: pos.row, column: 0 },
-                        end: { row: pos.row, column: line.length }
+                        start: {
+                            row: pos.row, column: 0
+                        },
+                        end: {
+                            row: pos.row, column: line.length
+                        }
                     }, html);
 
                     // FIX: proper cursor position inside last tag

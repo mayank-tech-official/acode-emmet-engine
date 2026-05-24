@@ -10,6 +10,8 @@
 - div>child structure
 - div*3 repetition
 
+----
+
 ## v1.1
 - Improved stability of Emmet expansion system
 - Fixed issue where normal text was incorrectly converted into HTML tags
@@ -29,6 +31,16 @@
 - div#id
 - div*3 repetition
 - Basic HTML tag expansion system
+
+---
+
+## v1.1.1
+- Fixed issue where plain text was incorrectly converted into HTML tags on Tab press
+- Emmet expansion now only works with valid HTML tags from allowed list
+- Improved input validation for safer tag expansion
+- Prevented accidental expansion of random words like "hello", "test", etc.
+- Minor stability improvements in Tab-based expansion system
+
 
 ---
 
