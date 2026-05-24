@@ -1,0 +1,10 @@
+{
+  "id": "acode.emmet.engine",
+  "name": "Acode Emmet Engine",
+  "main": "main.js",
+  "version": "1.0.0",
+  "minVersionCode": 290,
+  "icon": "icon.png",
+  "author": "Mayank Sinha",
+  "license": "MIT"
+}
