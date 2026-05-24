@@ -1,0 +1,28 @@
+{
+    "name": "Acode-Emmet Engine",
+    "version": "1.1.1",
+    "description": "Lightweight Emmet-like HTML expansion engine for Acode editor",
+    "main": "main.js",
+    "author": "mayank-tech-official",
+    "license": "MIT",
+    "keywords": [
+        "acode",
+        "plugin",
+        "emmet",
+        "html",
+        "editor",
+        "code-editor"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/mayank-tech-official/acode-emmet-engine.git"
+    },
+    "bugs": {
+        "url": "https://github.com/mayank-tech-official/acode-emmet-engine/issues"
+    },
+    "homepage": "https://github.com/mayank-tech-official/acode-emmet-engine#readme",
+    "scripts": {
+        "build": "echo \"No build step required\"",
+        "build-release": "echo \"Ready for release\""
+    }
+}
