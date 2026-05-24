@@ -25,32 +25,39 @@ EXAMPLES
 --------
 
 Input:
+```html
 div.hero
-
+```
 Output:
+```html
 <div class="hero"></div>
-
+```
 --------------------
 
 Input:
+```html
 div>ul>li
-
+```
 Output:
+```html
 <div>
   <ul>
     <li></li>
   </ul>
 </div>
-
+```
 --------------------
 
 Input:
+```html
 div*3
-
+```
 Output:
+```html
 <div></div>
 <div></div>
 <div></div>
+```
 
 INSTALLATION
 ------------
